@@ -1,0 +1,11 @@
+## Navigate to Directory
+
+python -v
+
+## If Python version returned above is 3.X - default port is 8000
+
+python3 -m http.server ####
+
+## If Python version returned above is 2.X - default port is 8000
+
+python -m SimpleHTTPServer ####
