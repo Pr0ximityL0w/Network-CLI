@@ -1,0 +1,27 @@
+## This HowTo is to set up a quick and dirty (unencrypted) Wireless Ad-Hoc Network between two linux Computers
+
+## On both Machines
+## Ensure interface is down
+
+ifconfig wlan0 down
+
+## On both Machines
+
+iwconfig wlan0 mode ad-hoc
+iwconfig wlan0 essid MyWifi
+
+# On Machine A
+
+ifconfig wlan0 192.168.1.1 netmask 255.255.255.0
+
+ifconfig wlan0 up
+
+# On Machine B
+
+ifconfig wlan0 192.168.1.2 netmask 255.255.255.0
+
+ifconfig wlan0 up
+
+# Run Ping to test the connection
+
+Ping -c 5 ..IP..
