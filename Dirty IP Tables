@@ -1,0 +1,70 @@
+## Quick and Dirty Firewall
+## Allows only Outgoing/Related HTTP (80) SSL (443) TCP traffic 
+## Allows loopback and Outgoing SSH Traffic
+## Allows Incomming SSH Traffic From Internal Network 192.168.1.0/24
+## Allows Only Outgoing/Replying ICMP Traffic 
+## Logs ALL Dropped Traffic 
+
+
+# Drops EVERYTHING (Inbound, Outbound and Forwarded)
+
+sudo iptables -P INPUT DROP
+sudo iptables -P OUTPUT DROP
+sudo iptables -P FORWARD DROP
+
+
+# Allow Inbound and Outbound HTTP
+
+sudo iptables -A INPUT -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+sudo iptables -A OUTPUT -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT
+
+
+# Allow Inbound and Outbound HTTPS (SSL)
+
+sudo iptables -A INPUT -p tcp --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
+sudo iptables -A OUTPUT -p tcp --sport 443 -m state --state ESTABLISHED -j ACCEPT
+
+
+# Alow Traffic on the Loopback 
+
+sudo iptables -A INPUT -i lo -j ACCEPT
+sudo iptables -A OUTPUT -o lo -j ACCEPT
+
+
+# Allow Outbound SSH Traffic 
+
+sudo iptables -A OUTPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+sudo iptables -A INPUT -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+
+# Allow Inbound SSH Traffic From Internal Network
+
+sudo iptables -A INPUT -i eth0 -p tcp -s 192.168.1.0/24 --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+sudo iptables -A OUTPUT -o eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+
+# Allow Outbound ECHO (Ping)
+
+sudo iptables -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
+sudo iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
+
+## Allow Ping from Outside to Inside
+## iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+## iptables -A OUTPUT -p icmp --icmp-type echo-reply -j ACCEPT
+
+
+# Log Dropped Traffic
+# Logs as Default to /var/log/messages
+
+sudo iptables -A INPUT -j LOG --log-prefix "**DROPPED INBOUND**"
+
+# Reject all Remaining Inbound Traffic mimicing RFC Complience
+# TCP with TCP RESET Packets, UDP STREAMS and with ICMP port Unreachable
+# All other Protocols will Recive ICMP Port Unreachable
+
+sudo iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
+sudo iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+sudo iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
+  
+## To prevent outgoing access to www.facebook.com
+## sudo iptables -A OUTPUT -p tcp -d 69.171.224.0/19 -j DROP
