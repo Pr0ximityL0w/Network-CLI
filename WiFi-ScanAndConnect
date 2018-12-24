@@ -1,0 +1,18 @@
+sudo iwlist wlan0 scan
+
+# Connect to a Open Network
+
+sudo iwconfig wlan0 essid "Wifinity Wifi - PAYG"
+
+# Connect to a Secured Network
+
+sudo iwconfig wlan0 essid "BTHub#-XXXX" key "XXXXXXXXXXX"
+
+# Run ifconfig to check you have an ip address
+# If you have no joy thyen request one
+
+sudo dhclient wlan0
+
+# Run a Ping test to Google to check your up
+
+ping -c 5 8.8.8.8
