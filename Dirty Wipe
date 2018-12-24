@@ -1,0 +1,13 @@
+## How to wipe a hard drive using 'DD' and simultaniously being able to check the progress...
+
+## using Ctrl F1 + F2 to switch between terminals
+## tty1 and tty2
+## In tty2 the command needs to be run everytime to see the current status
+
+# tty1
+
+sudo dd if=/dev/zero of=/dev/"insert dev here' bs=1m
+
+# tty2
+
+sudo kill -usr1 $(grep ^dd)
