@@ -1,0 +1,4 @@
+SSH jump host. It allows you to specify multiple hosts to jump from one host to another. 
+Good for example if you have a jump box you must access to be able to access other hosts on a network.
+
+ssh -J host1 host2
