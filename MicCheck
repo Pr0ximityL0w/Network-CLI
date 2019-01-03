@@ -1,0 +1,7 @@
+# One - Host Discovery
+
+        netdiscover -r 10.0.0.1/24  
+
+# Two - Host Scan
+
+        nmap -Pn -sS -A 10.0.0.1
